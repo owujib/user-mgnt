@@ -1,0 +1,9 @@
+{
+  "dirs": {
+    "uploadsDir": "./uploads",
+    "controllersDir": "./server/api/controllers",
+    "middlewaresDir": "..server/api/middlewares",
+    "viewsDir": "./views",
+    "publicDir": "./public"
+  }
+}

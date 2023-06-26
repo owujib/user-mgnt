@@ -2,10 +2,10 @@ import express from 'express';
 import path from 'path';
 import fs from 'fs';
 import morgan from 'morgan';
-import ApiError from './server/utils/ApiError';
-import HttpStatusCode from './server/helpers/HttpsResponse';
-import serverConfig from './server.config.json';
-import ServerFileHandler from './server/utils/ServerFileHandler';
+import ApiError from './utils/ApiError';
+import HttpStatusCode from './helpers/HttpsResponse';
+import serverConfig from '../server.config.json';
+import ServerFileHandler from './utils/ServerFileHandler';
 
 const db = require('./models');
 process.env.TZ = 'Africa/Lagos';
@@ -25,6 +25,9 @@ class Kernel extends ServerFileHandler {
     this.routes();
     this.errorHandler();
     this.databaseConnection();
+
+
+    this.app.set('PORT', process.env.PORT || 5500)
   }
 
   middlewares() {

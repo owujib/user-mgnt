@@ -4,7 +4,8 @@
   "description": "A bolier plate for expressjs, and sequelize using typescript",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon --ext 'js,ts' ./server/index"
   },
   "repository": {
     "type": "git",

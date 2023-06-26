@@ -45,9 +45,9 @@ class Kernel extends ServerFileHandler {
   // registerRoute(
   //   routeMethod: 'get' | 'post' | 'put' | 'patch' | 'delete',
   //   routePath: string,
-  //   routeHandler: RouteHandlerDecorator,
+  //   routeHandler,
   // ) {
-  //   this.app[routeMethod](routePath, routeHandler.bind(userController));
+  //   this.app[routeMethod](routePath, routeHandler.bind(this));
   // }
 
   errorHandler() {
@@ -69,7 +69,6 @@ class Kernel extends ServerFileHandler {
 
   setUp() {
     for (const key in serverConfig.dirs) {
-      console.log(key);
       this.runDirs((<any>serverConfig).dirs[key]);
     }
   }

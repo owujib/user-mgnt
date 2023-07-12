@@ -1,23 +1,21 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import path from 'path';
 import fs from 'fs';
 import morgan from 'morgan';
+
+import 'dotenv/config';
+
 import ApiError from './utils/ApiError';
 import HttpStatusCode from './helpers/HttpsResponse';
-import serverConfig from '../server.config.json';
-import ServerFileHandler from './utils/ServerFileHandler';
 
-const db = require('./models');
+// const db = require('./models');
 process.env.TZ = 'Africa/Lagos';
 
-class Kernel extends ServerFileHandler {
+class Kernel {
   app: express.Application;
 
   constructor() {
-    super();
     this.app = express();
-
-    this.setUp();
 
     this.middlewares();
 
@@ -26,8 +24,9 @@ class Kernel extends ServerFileHandler {
     this.errorHandler();
     this.databaseConnection();
 
-
-    this.app.set('PORT', process.env.PORT || 5500)
+    console.log(process.env);
+    this.app.set('PORT', process.env.PORT || 5500);
+    this.app.set('NODE_ENV', process.env.NODE_ENV);
   }
 
   middlewares() {
@@ -45,16 +44,9 @@ class Kernel extends ServerFileHandler {
 
   routes() {}
 
-  // registerRoute(
-  //   routeMethod: 'get' | 'post' | 'put' | 'patch' | 'delete',
-  //   routePath: string,
-  //   routeHandler,
-  // ) {
-  //   this.app[routeMethod](routePath, routeHandler.bind(this));
-  // }
-
   errorHandler() {
-    this.app.use(function (req, res, next) {
+    /**404 routes */
+    this.app.all('*', (req, res, next) => {
       return next(
         new ApiError('Route not found', HttpStatusCode.HTTP_NOT_FOUND, {
           message:
@@ -63,17 +55,24 @@ class Kernel extends ServerFileHandler {
       );
     });
 
-    // this.app.use(globalErrorHandler);
+    /**global error handler */
+    this.app.use(
+      (err: ApiError, req: Request, res: Response, next: NextFunction) => {
+        err.statusCode =
+          err.statusCode || HttpStatusCode.HTTP_INTERNAL_SERVER_ERROR;
+        err.status = err.status || 'error';
+
+        return res.status(err.statusCode).json({
+          status: err.status,
+          message: err.message,
+          error: err.error,
+        });
+      },
+    );
   }
 
   databaseConnection() {
     return '';
-  }
-
-  setUp() {
-    for (const key in serverConfig.dirs) {
-      this.runDirs((<any>serverConfig).dirs[key]);
-    }
   }
 }
 

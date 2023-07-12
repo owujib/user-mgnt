@@ -2,33 +2,26 @@ import { NextFunction, Request, Response } from 'express';
 import multer, { FileFilterCallback } from 'multer';
 import path from 'path';
 import ApiError from '../utils/ApiError';
-import HttpStatusCode from '../helpers/HttpsResponse';
+import { HttpStatusCode } from 'axios';
 import Helper from '../helpers';
+import { uploadHandlerType } from '../types';
+import fileConfig from '../config/fileConfig';
+import Helpers from '../helpers';
 
-interface validatorFunctionType {
-  (req: Request, file: Express.Multer.File, callback: FileFilterCallback): void;
-}
-
-interface uploadHandlerType {
-  fields: { name: string; maxCount: number }[];
-  validationFunction: validatorFunctionType;
-  limit: number | null;
-}
+let storage = multer.diskStorage({
+  destination: (req: Request, file: any, callback: any): void => {
+    callback(null, fileConfig.disks.local.root);
+  },
+  filename: (req, file, callback) => {
+    callback(null, Helpers.generateUniqueFilename(file.originalname));
+  },
+});
 
 export function uploadFileHandler({
   fields,
   validationFunction,
   limit,
 }: uploadHandlerType) {
-  let storage = multer.diskStorage({
-    destination: (req: Request, file: any, callback: any): void => {
-      callback(null, 'uploads');
-    },
-    filename: (req, file, callback) => {
-      const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-      callback(null, `${file.fieldname}-image-${uniqueSuffix}${path.extname}`);
-    },
-  });
   return function (
     target: any,
     propertyKey: string,
@@ -50,21 +43,33 @@ export function uploadFileHandler({
       upload.fields(fields)(req, res, (err: any) => {
         if (err instanceof multer.MulterError) {
           throw next(
-            new ApiError(
-              'Request File Error',
-              HttpStatusCode.HTTP_BAD_REQUEST,
-              err,
-            ),
+            new ApiError('Request File Error', HttpStatusCode.BadRequest, err),
           );
         } else if (err) {
           throw next(
-            new ApiError('Server error', HttpStatusCode.HTTP_BAD_REQUEST, err),
+            new ApiError('Server error', HttpStatusCode.BadRequest, err),
           );
         }
 
         const filePath = req.files;
-        return originalMethod.call(this, req, res);
+        return originalMethod.call(this, req, res, next);
       });
     };
   };
 }
+
+export const uploadHelper = ({
+  validationFunction,
+  fields,
+  limit,
+}: uploadHandlerType) => {
+  const upload = multer({
+    storage: storage,
+    fileFilter: validationFunction,
+    limits: {
+      fileSize: limit || Helper.convertToBytes(2),
+    },
+  });
+
+  return upload.fields(fields);
+};

@@ -1,7 +1,9 @@
-import Kernel from './kernel'
+import Kernel from './kernel';
 
-const PORT = Kernel.get('PORT')
+const PORT = Kernel.get('PORT');
 
-Kernel.listen(Kernel.get('PORT'), ()=>{
-    console.log('server is runing')
-})
+console.log(Kernel.app('NODE_ENV'));
+
+Kernel.listen(Kernel.get('PORT'), () => {
+  console.log('server is runing');
+});

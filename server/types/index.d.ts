@@ -1,8 +1,12 @@
+import { Request } from 'express';
+import multer, { FileFilterCallback } from 'multer';
+
 export interface validatorFunctionType {
   (req: Request, file: Express.Multer.File, callback: FileFilterCallback): void;
 }
+
 export interface uploadHandlerType {
   fields: { name: string; maxCount: number }[];
-  validationFunction: validatorFunctionType;
+  validationFunction: any;
   limit: number | null;
 }

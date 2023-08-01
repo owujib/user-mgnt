@@ -24,7 +24,6 @@ class Kernel {
     this.errorHandler();
     this.databaseConnection();
 
-    console.log(process.env);
     this.app.set('PORT', process.env.PORT || 5500);
     this.app.set('NODE_ENV', process.env.NODE_ENV);
   }

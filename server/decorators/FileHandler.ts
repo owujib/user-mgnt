@@ -1,6 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import multer, { FileFilterCallback } from 'multer';
-import path from 'path';
+import multer from 'multer';
 import ApiError from '../utils/ApiError';
 import { HttpStatusCode } from 'axios';
 import Helper from '../helpers';

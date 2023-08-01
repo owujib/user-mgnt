@@ -21,20 +21,6 @@ cloudinary.config({
   secure: true,
 });
 export default class Helper {
-  static algorithm = 'aes-256-ctr';
-
-  static Encrypt(inputPassword: string, appKey: string): { key: string } {
-    return {
-      key: crypto.AES.encrypt(inputPassword, appKey).toString(),
-    };
-  }
-
-  static Decrypt(password: string, appKey: string) {
-    return {
-      key: crypto.AES.decrypt(password, appKey).toString(crypto.enc.Utf8),
-    };
-  }
-
   static cloudinaryImageUploadMethod = async (
     filePath: string,
     resource_type: 'image' | 'video' | 'raw' | 'auto',
@@ -116,19 +102,6 @@ export default class Helper {
     return result;
   }
 
-  static createRefreshToken() {
-    const expiredAt = Helper.addDays(new Date(), 30);
-    const uuid = randomUUID();
-    return {
-      token: uuid,
-      expire_at_ms: expiredAt.getTime(),
-    };
-  }
-
-  static pluckUserNameFromEmail(email: string) {
-    return email.split('@')[0];
-  }
-
   static getPublicId(imageURL: string): string {
     const [, publicIdWithExtensionName] = imageURL.split('upload/');
     const extensionName = path.extname(publicIdWithExtensionName);
@@ -149,6 +122,11 @@ export default class Helper {
   static convertToBytes(value: number) {
     const BYTES = 1000000;
     return value * BYTES;
+  }
+
+  static generateUniqueFilename(filename: string) {
+    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
+    return `${filename.split('.')[0]}-${uniqueSuffix}${path.extname(filename)}`;
   }
 
   /**

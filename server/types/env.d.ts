@@ -1,3 +1,5 @@
+import { string } from 'joi';
+
 namespace Nodejs {
   interface ProcessEnv {
     NODE_ENV: string;
@@ -22,5 +24,10 @@ namespace Nodejs {
     AWS_URL: string;
     AWS_ENDPOINT: string;
     AWS_USE_PATH_STYLE_ENDPOINT: string;
+
+    EMAIL_HOST: string;
+    EMAIL_PORT: string;
+    EMAIL_USERNAME: string;
+    EMAIL_PASSWORD: string;
   }
 }

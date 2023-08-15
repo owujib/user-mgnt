@@ -8,20 +8,6 @@ const db = require('../models');
 
 dotenv.config({ path: path.resolve('.env') });
 
-// const handleCastErrorDB = (err: any) => {
-//   const message = `Invalid ${err.path}: ${err.value}.`;
-//   return new ApiError(message, HttpResponseCode.HTTP_BAD_REQUEST, {});
-// };
-
-// const handleDuplicateFieldsDB = (err: any) => {
-//   // duplicate fields
-//   const value = err.message?.match(/(["'])(\\?.)*?\1/)[0];
-//   const message = `Duplicate field value: ${value}. Please use another value!`;
-//   return new ApiError(message, HttpResponseCode.HTTP_BAD_REQUEST, {
-//     message: value,
-//   });
-// };
-
 const handleValidationErrorDB = (err: any) => {
   const errors = Object.values(err.errors).map((el: any) => el.message);
   const message = `Invalid input data. ${errors.join('. ')}`;
@@ -125,13 +111,6 @@ const globalErrorHandler = async (
     error: err.error,
   };
 
-  // check for operational errors and send custom messages
-  //   if (error.name === 'CastError') {
-  //     error = handleCastErrorDB(error);
-  //   }
-  //   if (error?.code === 11000) {
-  //     error = handleDuplicateFieldsDB(error);
-  //   }
   if (error.name === 'SequelizeValidationError') {
     error = handleValidationErrorDB(error);
   }

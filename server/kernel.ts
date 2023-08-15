@@ -1,14 +1,19 @@
 import express, { NextFunction, Request, Response } from 'express';
-import path from 'path';
-import fs from 'fs';
 import morgan from 'morgan';
-
 import 'dotenv/config';
+import path from 'path';
 
 import ApiError from './utils/ApiError';
 import HttpStatusCode from './helpers/HttpsResponse';
 
-// const db = require('./models');
+import testRoute from './routes/test.routes';
+import authRoute from './routes/auth.routes';
+import { uploadHelper } from './decorators/FileHandler';
+import Helper from './helpers';
+import logs, { Logger } from './config/logger';
+// const { logs } = require('./config/logger');
+
+import db from './models';
 process.env.TZ = 'Africa/Lagos';
 
 class Kernel {
@@ -23,9 +28,6 @@ class Kernel {
     this.routes();
     this.errorHandler();
     this.databaseConnection();
-
-    this.app.set('PORT', process.env.PORT || 5500);
-    this.app.set('NODE_ENV', process.env.NODE_ENV);
   }
 
   middlewares() {
@@ -35,13 +37,41 @@ class Kernel {
     this.app.use(express.json());
     this.app.use(express.urlencoded({ extended: false }));
 
-    this.app.use(morgan('combined'));
+    this.app.set('PORT', process.env.PORT || 5500);
+    this.app.set('NODE_ENV', process.env.NODE_ENV);
+    this.app.use(morgan('combined', { stream: logs.stream }));
+
     this.app.use(express.static(path.join(__dirname, '../public')));
   }
 
   webhooks() {}
 
-  routes() {}
+  routes() {
+    this.app.use('/api/auth', authRoute);
+    this.app.use('/test', testRoute);
+    this.app.get('/home', (req, res, next) =>
+      res.status(200).json({
+        nessage: 'hello',
+      }),
+    );
+
+    this.app.post(
+      '/upload',
+      uploadHelper({
+        fields: [{ name: 'image', maxCount: 1 }],
+        validationFunction: Helper.requestFileValidation([
+          'image/jpeg',
+          'image/png',
+        ]),
+        limit: null,
+      }),
+      (req, res, next) => {
+        return res
+          .status(200)
+          .json({ files: (<any>req).files.image[0], file: req.file });
+      },
+    );
+  }
 
   errorHandler() {
     /**404 routes */
@@ -71,7 +101,14 @@ class Kernel {
   }
 
   databaseConnection() {
-    return '';
+    (async function () {
+      try {
+        await db.sequelize.authenticate();
+        Logger.info('Database connection is successful');
+      } catch (error) {
+        Logger.error('Database connection error: ', error);
+      }
+    })();
   }
 }
 

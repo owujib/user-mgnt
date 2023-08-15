@@ -85,7 +85,7 @@ export default class Helper {
     return result;
   }
 
-  static async hash(value: string, saltValue: number) {
+  static hash(value: string, saltValue: number) {
     return bcrypt.hashSync(value, saltValue);
   }
 

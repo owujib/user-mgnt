@@ -13,7 +13,7 @@ import Helper from './helpers';
 import logs, { Logger } from './config/logger';
 // const { logs } = require('./config/logger');
 
-import db from './models';
+import dbConnection from './config/database';
 process.env.TZ = 'Africa/Lagos';
 
 class Kernel {
@@ -55,6 +55,7 @@ class Kernel {
       }),
     );
 
+    /**example of file upload */
     this.app.post(
       '/upload',
       uploadHelper({
@@ -103,7 +104,7 @@ class Kernel {
   databaseConnection() {
     (async function () {
       try {
-        await db.sequelize.authenticate();
+        await dbConnection();
         Logger.info('Database connection is successful');
       } catch (error) {
         Logger.error('Database connection error: ', error);

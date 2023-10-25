@@ -4,9 +4,11 @@ import ApiError from '../utils/ApiError';
 import HttpStatusCode from './HttpsResponse';
 
 class Validator {
-  static validateBody(req: Request, validationSchema: any) {
-    const schema = Joi.object(validationSchema);
-    return schema.validate(req.body);
+  static validateBody<T>(
+    requestPayload: Joi.PartialSchemaMap<T>,
+  ): Joi.ValidationResult {
+    const schema = Joi.object<T>(requestPayload);
+    return schema.validate(requestPayload, { abortEarly: false });
   }
 
   static RequestValidationError(payload: any) {

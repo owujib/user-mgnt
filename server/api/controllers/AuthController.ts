@@ -6,9 +6,10 @@ import HttpStatusCode from '../../helpers/HttpsResponse';
 import Validator from '../../helpers/Validator';
 import Joi from 'joi';
 
-import db from '../../models';
 import ApiError from '../../utils/ApiError';
 import AuthMail from '../../mail/Authmail';
+import { CreateUserDto } from 'api/dto';
+import User from 'models/User';
 
 class AuthController extends Controller {
   constructor() {
@@ -17,52 +18,53 @@ class AuthController extends Controller {
 
   public async register(req: Request, res: Response, next: NextFunction) {
     try {
-      const { error } = Validator.validateBody(req, {
+      const { error, value } = Validator.validateBody<CreateUserDto>({
         email: Joi.string().email().required(),
-        firstname: Joi.string().required(),
-        lastname: Joi.string().required(),
-        password: Joi.string().required(),
+        username: Joi.string().required(),
+        password: Joi.string().required().min(5).max(15),
       });
 
-      if (error) {
-        return next(Validator.RequestValidationError(error.message));
-      }
+      console.log(error?.details);
 
-      if (
-        await db.User.findOne({
-          where: {
-            email: req.body.email,
-          },
-        })
-      ) {
+      if (error) {
         return next(
-          new ApiError(
-            'A user with the given email already exists',
-            HttpStatusCode.HTTP_BAD_REQUEST,
-            {
-              message: 'Account exists',
-            },
+          Validator.RequestValidationError(
+            error?.details.map((err) => err.message),
           ),
         );
       }
 
-      const user = await db.User.create({
-        ...req.body,
-        password: Helper.hash(req.body.password, 10),
-      });
+      // if (
+      // await User.findOne({})
+      // ) {
+      //   return next(
+      //     new ApiError(
+      //       'A user with the given email already exists',
+      //       HttpStatusCode.HTTP_BAD_REQUEST,
+      //       {
+      //         message: 'Account exists',
+      //       },
+      //     ),
+      //   );
+      // }
 
-      await new AuthMail(user).sendWelcome({ title: 'welcome' });
-      return super.sendSuccessResponse(
-        res,
-        {
-          id: user.id,
-          emai: user.email,
-          firstname: user.firstname,
-          lastname: user.lastname,
-        },
-        'Account has been created',
-        HttpStatusCode.HTTP_CREATED,
-      );
+      //   const user = await db.User.create({
+      //     ...req.body,
+      //     password: Helper.hash(req.body.password, 10),
+      //   });
+
+      //   await new AuthMail(user).sendWelcome({ title: 'welcome' });
+      //   return super.sendSuccessResponse(
+      //     res,
+      //     {
+      //       id: user.id,
+      //       emai: user.email,
+      //       firstname: user.firstname,
+      //       lastname: user.lastname,
+      //     },
+      //     'Account has been created',
+      //     HttpStatusCode.HTTP_CREATED,
+      //   );
     } catch (error) {
       return next(error);
     }

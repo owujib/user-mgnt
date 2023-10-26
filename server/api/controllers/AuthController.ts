@@ -15,7 +15,7 @@ import {
   ResetPasswordDto,
   UpdatePasswordDto,
   UserLoginDto,
-} from 'api/dto';
+} from '../dto';
 import User from '../../models/User';
 import Role from '../../models/Role';
 import UserHasRole from '../../models/UserHasRole';

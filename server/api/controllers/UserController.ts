@@ -1,15 +1,13 @@
 import { Response, Request, NextFunction } from 'express';
 import Controller from '.';
 
-import Helper from '../../helpers';
 import HttpStatusCode from '../../helpers/HttpsResponse';
 import Validator from '../../helpers/Validator';
 import Joi from 'joi';
 
 import ApiError from '../../utils/ApiError';
-import AuthMail from '../../mail/Authmail';
 import User from '../../models/User';
-import { CreateUserDto, UpdateUserDto } from 'api/dto';
+import { CreateUserDto, UpdateUserDto } from '../dto';
 
 class UserController extends Controller {
   constructor() {

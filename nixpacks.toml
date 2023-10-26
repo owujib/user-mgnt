@@ -1,0 +1,23 @@
+[variables]
+# NODE_ENV = 'development'
+CI = "false"
+# NODE_VERSION = "16.x"
+
+[build.environment]
+# Environment variables are set here
+# NODE_VERSION = "16.18.0"
+
+[phase.name]
+paths = ['./.env']
+
+[phases.setup]
+nixPkgs = ['nodejs']
+
+[phases.install]
+cmd = "npm install"
+
+[phases.build]
+cmds = ['CI=false tsc -p tsconfig.json']
+
+[start]
+cmd = "npm start"

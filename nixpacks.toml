@@ -17,7 +17,7 @@ nixPkgs = ['nodejs']
 cmd = "npm install"
 
 [phases.build]
-cmds = ['rm -rf ./build && tsc -p tsconfig.json']
+cmds = ['tsc -p tsconfig.json']
 
 [start]
 cmd = "npm start"

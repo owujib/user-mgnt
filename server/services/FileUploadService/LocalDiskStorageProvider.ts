@@ -2,7 +2,8 @@
 import fs from 'fs';
 import path from 'path';
 import fileConfig from '../../config/fileConfig';
-import { resourceTypes } from '../../types';
+import { resourceTypes } from '../../interface';
+
 import { config } from 'dotenv';
 
 config({ path: '../../.env' });

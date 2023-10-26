@@ -6,7 +6,7 @@ import {
   UploadApiResponse,
 } from 'cloudinary';
 import FileConfig from '../../config/fileConfig';
-import { resourceTypes } from '../../types';
+import { resourceTypes } from '../../interface';
 
 class CloudinaryStorageProvider {
   constructor() {

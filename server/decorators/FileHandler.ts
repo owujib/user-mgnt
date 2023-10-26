@@ -3,7 +3,7 @@ import multer from 'multer';
 import ApiError from '../utils/ApiError';
 import { HttpStatusCode } from 'axios';
 import Helper from '../helpers';
-import { uploadHandlerType } from '../types';
+import { uploadHandlerType } from '../interface';
 import fileConfig from '../config/fileConfig';
 import Helpers from '../helpers';
 

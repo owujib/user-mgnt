@@ -1,9 +1,10 @@
 import fileConfig from '../../config/fileConfig';
 import Helpers from '../../helpers';
-import { resourceTypes } from '../../types';
+import { resourceTypes } from '../../interface';
+
 // import AwsStorageProvider from './AwsStorageProvider';
 import CloudinaryStorageProvider from './CloudinaryStorageProvider';
-import LocalDiskStorageProvider from './LocalStorageProvider';
+import LocalDiskStorageProvider from './LocalDiskStorageProvider';
 
 type FileSystemProviderInterface =
   | CloudinaryStorageProvider

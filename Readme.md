@@ -71,7 +71,7 @@
 
     APP_KEY=32a7c526b05e8001d9f475725128a25ca616509d
 
-    DB_PROD_URL=mongodb+srv://owujib:YSP_staging@cluster0.iqkhw.mongodb.net/userMgnt?retryWrites=true&w=majority
+    DB_PROD_URL=
 
     DB_URL=mongodb://localhost:27017/userMgnt
 

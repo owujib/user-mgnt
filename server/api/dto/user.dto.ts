@@ -1,10 +1,25 @@
 export interface CreateUserDto {
-  username: string;
+  username?: string;
   email: string;
   password: number;
 }
 
 export interface UserLoginDto {
-  email: string;
+  identity: string;
   password: string;
+}
+
+export interface UpdateUserDto {
+  email?: string;
+  username?: string;
+}
+
+export interface ResetPasswordDto {
+  code: string;
+  password: string;
+}
+
+export interface UpdatePasswordDto {
+  current_password: string;
+  new_password: string;
 }

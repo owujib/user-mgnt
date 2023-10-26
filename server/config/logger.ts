@@ -46,8 +46,8 @@ const logs: any = Winston.createLogger({
 });
 
 logs.stream = {
-  write(message: string, encoding: any) {
-    logs.info(message);
+  write(message: string) {
+    logs.info(JSON.stringify(message));
   },
 };
 

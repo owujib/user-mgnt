@@ -6,6 +6,7 @@ declare global {
       UPLOADS_DIR: string;
       DB_URL: string;
       DB_PROD_URL: string;
+      APP_KEY: string;
 
       CLOUDINARY_CLOUD_NAME: string;
       CLOUDINARY_API_KEY: string;
@@ -29,6 +30,8 @@ declare global {
       EMAIL_PORT: string;
       EMAIL_USERNAME: string;
       EMAIL_PASSWORD: string;
+
+      JWT_EXPIRES_IN: string;
     }
   }
 }

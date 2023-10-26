@@ -6,12 +6,11 @@ import path from 'path';
 import ApiError from './utils/ApiError';
 import HttpStatusCode from './helpers/HttpsResponse';
 
-import testRoute from './routes/test.routes';
 import authRoute from './routes/auth.routes';
+import userRoute from './routes/user.routes';
 import { uploadHelper } from './decorators/FileHandler';
 import Helper from './helpers';
 import logs, { Logger } from './config/logger';
-// const { logs } = require('./config/logger');
 
 import dbConnection from './config/database';
 process.env.TZ = 'Africa/Lagos';
@@ -48,7 +47,7 @@ class Kernel {
 
   routes() {
     this.app.use('/api/auth', authRoute);
-    this.app.use('/test', testRoute);
+    this.app.use('/api/user', userRoute);
     this.app.get('/home', (req, res, next) =>
       res.status(200).json({
         nessage: 'hello',

@@ -1,7 +1,7 @@
 import { UserHasRoleAttributes } from 'interface/models';
 import mongoose from 'mongoose';
 import RoleModel from './Role';
-import PermissionModel from './Permission';
+import UserModel from './User';
 
 const RoleSchema = new mongoose.Schema<UserHasRoleAttributes>(
   {
@@ -9,9 +9,10 @@ const RoleSchema = new mongoose.Schema<UserHasRoleAttributes>(
       type: mongoose.Schema.Types.ObjectId,
       ref: RoleModel,
     },
-    permission_id: {
+
+    user_id: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: PermissionModel,
+      ref: UserModel,
     },
   },
   {

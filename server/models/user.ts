@@ -22,6 +22,9 @@ const UserSchema = new mongoose.Schema<UserAttributes>(
       min: 5,
       max: 15,
     },
+    last_login:{
+      type: Date,
+    }
   },
   {
     timestamps: true,

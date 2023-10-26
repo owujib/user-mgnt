@@ -5,10 +5,11 @@ import HttpStatusCode from './HttpsResponse';
 
 class Validator {
   static validateBody<T>(
-    requestPayload: Joi.PartialSchemaMap<T>,
+    requestDTO: Joi.PartialSchemaMap<T>,
+    requestBody: T,
   ): Joi.ValidationResult {
-    const schema = Joi.object<T>(requestPayload);
-    return schema.validate(requestPayload, { abortEarly: false });
+    const schema = Joi.object<T>(requestDTO);
+    return schema.validate(requestBody, { abortEarly: false });
   }
 
   static RequestValidationError(payload: any) {

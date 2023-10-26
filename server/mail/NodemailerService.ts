@@ -11,14 +11,14 @@ export default class NodemailerService {
     let options: SMTPTransport.Options = {
       host: <string>process.env.EMAIL_HOST,
       port: Number(process.env.EMAIL_PORT),
-      secure: true,
+      // secure: true,
       auth: {
         user: process.env.EMAIL_USERNAME,
         pass: process.env.EMAIL_PASSWORD,
       },
-      tls: {
-        ciphers: 'SSLv3',
-      },
+      // tls: {
+      //   ciphers: 'SSLv3',
+      // },
     };
     this.transporter = nodemailer.createTransport<any>(options);
   }

@@ -1,49 +1,19 @@
 import jwt from 'jsonwebtoken';
 import crypto from 'crypto-js';
+
 import { randomUUID } from 'crypto';
 import { Request } from 'express';
 import { FileFilterCallback } from 'multer';
 import path from 'path';
-import {
-  v2 as cloudinary,
-  UploadApiErrorResponse,
-  UploadApiResponse,
-} from 'cloudinary';
+
 import bcrypt from 'bcryptjs';
 
 import HttpStatusCode from './HttpsResponse';
 import ApiError from '../utils/ApiError';
+import JwtAccessToken from '../models/JwtAccessToken';
+import { UserAttributes } from 'interface/models';
 
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true,
-});
 export default class Helper {
-  static cloudinaryImageUploadMethod = async (
-    filePath: string,
-    resource_type: 'image' | 'video' | 'raw' | 'auto',
-    folder: string,
-  ): Promise<UploadApiResponse | UploadApiErrorResponse> =>
-    cloudinary.uploader.upload(filePath, { resource_type, folder });
-
-  static cloudinaryResourceUploadMethod = async (
-    filePath: string,
-  ): Promise<UploadApiResponse | UploadApiErrorResponse> =>
-    cloudinary.uploader.upload(filePath, { resource_type: 'auto' });
-
-  static cloudinaryRemoveImageMethod = async (
-    publicId: string,
-  ): Promise<UploadApiResponse | UploadApiErrorResponse> =>
-    cloudinary.uploader.destroy(publicId, { resource_type: 'image' });
-
-  static cloudinaryRemoveResourceMethod = async (
-    publicId: string,
-    resource_type: 'image' | 'video' | 'raw' | 'auto',
-  ): Promise<UploadApiResponse | UploadApiErrorResponse> =>
-    cloudinary.uploader.destroy(publicId, { type: 'upload', resource_type });
-
   static signToken(payload: any): { token: string } {
     const token = jwt.sign(payload, (<any>process.env).APP_KEY, {
       expiresIn: (<any>process).env.JWT_EXPIRES_IN,
@@ -56,44 +26,12 @@ export default class Helper {
     return { token };
   }
 
-  static randomStringGenerator(length: number) {
-    let result = '';
-    const Characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-    const CharactersLength = Characters.length;
-
-    if (length >= 500) {
-      length = 500;
-    }
-
-    for (let index = 0; index < length; index++) {
-      result += Characters.charAt(Math.floor(Math.random() * CharactersLength));
-    }
-    return result;
-  }
-  static randomNumberGenerator(length: number) {
-    let result = '';
-    const Characters = '0123456789';
-    const CharactersLength = Characters.length;
-
-    if (length >= 500) {
-      length = 500;
-    }
-
-    for (let index = 0; index < length; index++) {
-      result += Characters.charAt(Math.floor(Math.random() * CharactersLength));
-    }
-    return result;
-  }
-
   static hash(value: string, saltValue: number) {
     return bcrypt.hashSync(value, saltValue);
   }
 
-  static async correctPassword(inputPassword: string, userPassword: string) {
+  static correctPassword(inputPassword: string, userPassword: string) {
     return bcrypt.compareSync(inputPassword, userPassword);
-  }
-  static async comparePin(inputPin: any, userPin: any) {
-    return bcrypt.compareSync(inputPin, userPin);
   }
 
   static addDays(date: Date, days: number) {
@@ -112,6 +50,27 @@ export default class Helper {
       .join('/');
 
     return publicId;
+  }
+
+  static async createAccessToken(user: UserAttributes) {
+    try {
+      const { token } = Helper.signToken({
+        id: user._id,
+        email: user.email,
+      });
+      const date = Helper.addDays(new Date(), 2);
+      const jwtToken = await JwtAccessToken.create({
+        token,
+        user_id: user._id,
+        revoked: false,
+        expires_at: date,
+        expires_at_ms: date.getTime(),
+      });
+
+      return jwtToken?.token;
+    } catch (error) {
+      throw error;
+    }
   }
 
   /**
@@ -154,5 +113,37 @@ export default class Helper {
         );
       }
     };
+  }
+
+  static calculateTimeZoneWithPlusOneGMT(date: Date, timeZone: number) {
+    // Get the current time in GMT
+    const gmtTime = date.toUTCString();
+
+    // Create a new Date object with the GMT time and add 1 hour
+    const plusOneGMTTime = new Date(gmtTime);
+    plusOneGMTTime.setHours(plusOneGMTTime.getHours() + timeZone);
+
+    // Return the new Date object
+    return plusOneGMTTime;
+  }
+
+  static randomStringGenerator(length: number): string {
+    let result = '';
+    const Characters =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const CharactersLength = Characters.length;
+
+    // NOTE: Max Length Allowed Is 500...
+    if (length >= 500) {
+      length = 500;
+    }
+
+    // Shuffle The Characters String According To The Passed In The Length...
+    for (let i = 0; i < length; i++) {
+      result += Characters.charAt(Math.floor(Math.random() * CharactersLength));
+    }
+
+    // Return The Generated String...
+    return result;
   }
 }

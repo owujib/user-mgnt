@@ -12,11 +12,6 @@
 - [Getting Started](#getting-started)
   - [Installation](#installation)
   - [Configuration](#configuration)
-- [Database Design](#database-design)
-- [API Endpoints](#api-endpoints)
-- [Authentication](#authentication)
-- [Testing](#testing)
-- [Deployment](#deployment)
 - [Postman Collection](#postman-collection)
 
 
@@ -104,3 +99,11 @@
 
 
 Postman Endpoint [Postman Link](https://www.postman.com/owujib/workspace/public-workspace/collection/27213384-f01bc6d9-9472-4790-b673-af1b12a69b37?action=share&creator=27213384)
+
+default admin users
+```json
+  {
+   "email": "owujibfavour@gmail.com",
+    "password": "password001"
+  }
+```

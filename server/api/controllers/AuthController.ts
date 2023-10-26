@@ -16,10 +16,10 @@ import {
   UpdatePasswordDto,
   UserLoginDto,
 } from '../dto';
-import User from '../../models/User';
-import Role from '../../models/Role';
-import UserHasRole from '../../models/UserHasRole';
-import PasswordReset from '../../models/PasswordReset';
+import User from 'models/User';
+import Role from 'models/Role';
+import UserHasRole from 'models/UserHasRole';
+import PasswordReset from 'models/PasswordReset';
 
 class AuthController extends Controller {
   constructor() {
